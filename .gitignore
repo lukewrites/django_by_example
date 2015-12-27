@@ -23,6 +23,8 @@ var/
 *.egg
 django_by_example/
 mysite/mysite/settings.py
+mysite/settings.py
+
 
 # Installer logs
 pip-log.txt

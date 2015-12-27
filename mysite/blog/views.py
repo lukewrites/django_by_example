@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Post
-from .forms import EmailPostForm
+from .models import Post, Comment
+from .forms import EmailPostForm, CommentForm
 from django.core.mail import send_mail
 
 
@@ -28,14 +28,31 @@ class PostListView(ListView):
 #                   'posts': posts})
 
 def post_detail(request, year, month, day, post):
-    post = get_object_or_404(Post, slug=post,
-                                   status='published',
-                                   publish__year=year,
-                                   publish__month=month,
-                                   publish__day=day)
-    return render(request,
-                  'blog/post/detail.html',
-                  {'post': post})
+    post = get_object_or_404(Post,
+                             slug=post,
+                             status='published',
+                             publish__year=year,
+                             publish__month=month,
+                             publish__day=day)
+    # list of active comments on the post
+    comments = post.comments.filter(active=True)
+    if request.method == 'POST':
+        # a comment was posted
+        comment_form = CommentForm(data=request.POST)
+        if comment_form.is_valid():
+            #create comment object but don't yet save to db
+            new_comment = comment_form.save(commit=False)
+            # assign the current post to the comment
+            new_comment.post = post
+            # save the comment to the db
+            new_comment.save()
+    else:
+        comment_form = CommentForm()
+        return render(request,
+                      'blog/post/detail.html',
+                      {'post': post,
+                      'comments: comments,
+                      'comment_form', comment_form})
 
 def post_share(request, post_id):
     # retrieve post by ID

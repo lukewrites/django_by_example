@@ -40,16 +40,23 @@ def post_detail(request, year, month, day, post):
 def post_share(request, post_id):
     # retrieve post by ID
     post = get_object_or_404(Post, id=post_id, status='published')
+    sent = False
+
     if request.method == 'POST':
         # form was submitted
         form = EmailPostForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            # ... send email
+            post_url = request.build_absolute_uri(post.get_absolute_url())
+            subject = '{} ({}) recommends you read "{}"'.format(cd['name'], cd['email'], post.title)
+            message = 'Read "{}" at {} \n\n{}\'s comments:{}'.format(post.title, post_url, cd['name'], cd['comments'])
+            send_mail(subject, message, 'microflaskinpoetry@gmail.com', [cd['to']])
+            sent=True
     else:
         form = EmailPostForm()
     return render(request,
                   'blog/post/share.html',
                   {'post': post,
-                  'form': form}
+                  'form': form,
+                  'sent': sent}
                   )

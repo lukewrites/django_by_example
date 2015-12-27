@@ -21,7 +21,8 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
-django_by_examples/
+django_by_example/
+mysite/mysite/settings.py
 
 # Installer logs
 pip-log.txt

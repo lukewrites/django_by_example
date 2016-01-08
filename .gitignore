@@ -25,6 +25,8 @@ django_by_example/
 mysite/mysite/settings.py
 mysite/settings.py
 
+*.idea
+
 
 # Installer logs
 pip-log.txt

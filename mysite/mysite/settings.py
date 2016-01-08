@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []  # needs to be edited when site deployed.
 
+SITE_ID = 1
 
 # Application definition
 
@@ -39,6 +40,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'blog',
     'taggit',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
 )
 
 MIDDLEWARE_CLASSES = (
